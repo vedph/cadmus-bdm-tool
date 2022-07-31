@@ -1,4 +1,7 @@
 ﻿{
+  "Context": {
+    "Id": "entry-set-reader-context.cadmus"
+  },
   "EntryReader": {
     "Id": "entry-reader.pdcx",
     "Options": {

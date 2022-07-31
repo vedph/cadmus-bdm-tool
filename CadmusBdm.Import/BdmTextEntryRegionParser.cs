@@ -1,6 +1,7 @@
 ﻿using Cadmus.Core;
 using Cadmus.General.Parts;
 using Cadmus.Refs.Bricks;
+using Fusi.Tools.Config;
 using Proteus.Core.Entries;
 using Proteus.Core.Regions;
 using System;
@@ -14,10 +15,12 @@ namespace CadmusBdm.Import
     /// <summary>
     /// Region parser for BDM lat/eng regions. These regions represent the
     /// text in an entry set.
+    /// Tag: <c>entry-region-parser.bdm-text</c>.
     /// </summary>
     /// <seealso cref="EntryRegionParser" />
     /// <seealso cref="IEntryRegionParser" />
-    public sealed class TextEntryRegionParser : EntryRegionParser, IEntryRegionParser
+    [Tag("entry-region-parser.bdm-text")]
+    public sealed class BdmTextEntryRegionParser : EntryRegionParser, IEntryRegionParser
     {
         private readonly StandardItemSortKeyBuilder _sortKeyBuilder;
         private readonly Regex _wsRegex;
@@ -31,10 +34,10 @@ namespace CadmusBdm.Import
         public const string K_SOURCE_TITLE = "*source_title";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextEntryRegionParser"/>
+        /// Initializes a new instance of the <see cref="BdmTextEntryRegionParser"/>
         /// class.
         /// </summary>
-        public TextEntryRegionParser()
+        public BdmTextEntryRegionParser()
         {
             _sortKeyBuilder = new();
             _wsRegex = new Regex(@"\s+", RegexOptions.Compiled);

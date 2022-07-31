@@ -1,4 +1,5 @@
 ﻿using CadmusBdm.Cli.Services;
+using CadmusBdm.Import;
 using Fusi.Cli;
 using Fusi.Cli.Commands;
 using Fusi.Microsoft.Extensions.Configuration.InMemoryJson;
@@ -80,8 +81,12 @@ namespace CadmusBdm.Cli.Commands
                 // Proteus.Entries
                 typeof(ExcelDumpEntryRegionParser).Assembly,
                 // Proteus.Entries.Pdcx
-                typeof(PdcxEntryReader).Assembly);
+                typeof(PdcxEntryReader).Assembly,
+                // CadmusBdm.Import
+                typeof(BdmTextEntryRegionParser).Assembly);
             EntryPipelineFactory factory = new(container, configuration);
+            factory.ConnectionString = configuration.GetConnectionString("Default");
+
             EntryPipeline pipeline = new();
             pipeline.Configure(factory);
 
