@@ -8,8 +8,9 @@
 
   <ItemGroup>
     <PackageReference Include="Cadmus.Core" Version="4.0.1" />
-    <PackageReference Include="Cadmus.General.Parts" Version="1.0.4" />
+    <PackageReference Include="Cadmus.General.Parts" Version="2.1.0" />
     <PackageReference Include="Cadmus.Mongo" Version="4.0.1" />
+    <PackageReference Include="Fusi.Tools" Version="2.1.6" />
     <PackageReference Include="Proteus.Entries" Version="2.0.8" />
   </ItemGroup>
 

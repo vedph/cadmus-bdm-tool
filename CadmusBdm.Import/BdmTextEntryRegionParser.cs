@@ -2,6 +2,7 @@
 using Cadmus.General.Parts;
 using Cadmus.Refs.Bricks;
 using Fusi.Tools.Config;
+using Fusi.Tools.Text;
 using Proteus.Core.Entries;
 using Proteus.Core.Regions;
 using System;
@@ -25,6 +26,7 @@ namespace CadmusBdm.Import
         private readonly StandardItemSortKeyBuilder _sortKeyBuilder;
         private readonly Regex _wsRegex;
         private readonly Regex _keywordRegex;
+        private readonly TextCutterOptions _cutOptions;
 
         /// <summary>
         /// The source title global datum. This is used by this parser to create
@@ -43,6 +45,14 @@ namespace CadmusBdm.Import
             _wsRegex = new Regex(@"\s+", RegexOptions.Compiled);
             _keywordRegex = new Regex("^%(?:(?<l>[^:]+):)?(?:(?<i>[^:]+):)?(?<v>.+)",
                 RegexOptions.Compiled);
+            _cutOptions = new()
+            {
+                Mode = TextCutterMode.Body,
+                Limit = 40,
+                LineFlattening = true,
+                MinusLimit = 5,
+                PlusLimit = 5,
+            };
         }
 
         /// <summary>
@@ -113,7 +123,7 @@ namespace CadmusBdm.Import
             return $"1.{i + 1}";
         }
 
-        private static void AddExternalIds(string? text, CommentLayerFragment fr)
+        private static void AddAssertedIds(string? text, CommentLayerFragment fr)
         {
             if (string.IsNullOrWhiteSpace(text)) return;
 
@@ -122,7 +132,7 @@ namespace CadmusBdm.Import
                     StringSplitOptions.RemoveEmptyEntries |
                     StringSplitOptions.TrimEntries)
                 .Where(url => fr.ExternalIds.All(id => id.Value != url))
-                .Select(url => new ExternalId { Value = url }));
+                .Select(url => new AssertedId { Value = url }));
         }
 
         private static void AddReference(string? a, string? w, string? l, string? y,
@@ -244,7 +254,7 @@ namespace CadmusBdm.Import
                     switch (cmd.Name)
                     {
                         case "urls":
-                            AddExternalIds(cmd.GetArgument("l"), fr);
+                            AddAssertedIds(cmd.GetArgument("l"), fr);
                             break;
                         case "aref":
                             AddReference(cmd.GetArgument("a"),
@@ -330,12 +340,13 @@ namespace CadmusBdm.Import
             }
 
             // set text and item's description from it
+            string t = text.ToString();
             textPart.Lines.Add(new TextLine
             {
                 Y = 1,
-                Text = NormalizeWS(text.ToString())
+                Text = NormalizeWS(t)
             });
-            // TODO set description by cutting text at middle
+            context.Item.Description = TextCutter.Cut(t, _cutOptions);
 
             // store
             StoreItem(context);
