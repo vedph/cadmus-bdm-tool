@@ -240,6 +240,7 @@ namespace CadmusBdm.Import
                 {
                     text.Append(txt.Value);
                     index++;
+                    continue;
                 }
 
                 // cmd: process:
@@ -266,7 +267,7 @@ namespace CadmusBdm.Import
                                 cmd.GetArgument("y"), fr);
                             break;
                         case "tags":
-                            AddTags(cmd.GetArgument("l"), fr);
+                            AddTags(cmd.GetArgument("t"), fr);
                             break;
                         case "fn":
                             break;
