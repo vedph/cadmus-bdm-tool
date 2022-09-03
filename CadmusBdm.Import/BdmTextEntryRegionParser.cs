@@ -268,6 +268,8 @@ namespace CadmusBdm.Import
                         case "tags":
                             AddTags(cmd.GetArgument("l"), fr);
                             break;
+                        case "fn":
+                            break;
                         default:
                             throw new ArgumentException("Unknown command entry: " + cmd);
                     }
