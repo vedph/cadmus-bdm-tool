@@ -1,0 +1,146 @@
+{
+  "EntryReader": {
+    "Id": "entry-reader.pdcx",
+    "Options": {
+      "Source": "c:\\users\\dfusi\\desktop\\bdm\\corfu.xml",
+      "Mappings": [
+        {
+          "ElementTag": "par",
+          "Entries": ["C block(open=1)"]
+        },
+        {
+          "ElementTag": "par",
+          "IsClosing": true,
+          "Entries": ["C block(open=0)"]
+        },
+        {
+          "ElementTag": "fn",
+          "Entries": ["C fn(open=1)", "T {{content}}"]
+        },
+        {
+          "ElementTag": "fn",
+          "IsClosing": true,
+          "Entries": ["C fn(open=0)"]
+        },
+        {
+          "ElementTag": "run",
+          "Entries": ["T {{content}}"]
+        }
+      ]
+    }
+  },
+  "EntryFilters": [
+    {
+      "Id": "entry-filter.txt-merger"
+    },
+    {
+      "Id": "entry-filter.escape",
+      "Options": {
+        "EscapeDecoders": [
+          {
+            "Id": "escape-decoder.pattern",
+            "Options": {
+              "Patterns": [
+                {
+                  "Pattern": "(?<urls>http[^\\s,)]+)",
+                  "Entries": ["C urls(l={urls})"]
+                }
+              ]
+            }
+          },
+          {
+            "Id": "escape-decoder.pattern",
+            "Options": {
+              "Patterns": [
+                {
+                  "Pattern": "\\@(?<a>[^,\\d]+),\\s*(?<w>[^;),]+),\\s*(?<l>[^;)]+)(?:;\\s*)?",
+                  "Entries": ["C aref(a={a},w={w},l={l})"]
+                }
+              ]
+            }
+          },
+          {
+            "Id": "escape-decoder.pattern",
+            "Options": {
+              "Patterns": [
+                {
+                  "Pattern": "\\@(?<a>[^,\\d]+),\\s*(?<l>[^;)]+)(?:;\\s*)?",
+                  "Entries": ["C aref(a={a},l={l})"]
+                }
+              ]
+            }
+          },
+          {
+            "Id": "escape-decoder.pattern",
+            "Options": {
+              "Patterns": [
+                {
+                  "Pattern": "\\@(?<a>[^,\\d]+)\\s+(?<y>[12]\\d{3})(,\\s*(?<l>[^;)]+)(?:;\\s*)?)?",
+                  "Entries": ["C aref(a={a},y={y},l={l})"]
+                }
+              ]
+            }
+          },
+          {
+            "Id": "escape-decoder.pattern",
+            "Options": {
+              "Patterns": [
+                {
+                  "Pattern": "^\\s*&?\\s*\\[(?<t>[^\\]]+)\\]",
+                  "Entries": ["C tags(t={t})"]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "EntrySetBoundaryDetector": {
+    "Id": "entry-set-detector.cmd",
+    "Options": {
+      "Name": "block",
+      "Type": 4
+    }
+  },
+  "EntryRegionDetectors": [
+    {
+      "Id": "region-detector.nth-set",
+      "Options": {
+        "Multiplier": 2,
+        "Offset": -1,
+        "Tag": "eng"
+      }
+    },
+    {
+      "Id": "region-detector.nth-set",
+      "Options": {
+        "Multiplier": 2,
+        "Offset": 0,
+        "Tag": "lat"
+      }
+    },
+    {
+      "Id": "region-detector.explicit",
+      "Options": {
+        "Tag": "fn",
+        "PairedCommandNames": ["fn"]
+      }
+    },
+    {
+      "Id": "region-detector.unmapped",
+      "Options": {
+        "UnmappedRegionTag": "x"
+      }
+    }
+  ],
+  "EntryRegionParsers": [
+    {
+      "Id": "entry-region-parser.excel-dump",
+      "Options": {
+        "MaxEntriesPerDumpFile": 10000,
+        "OutputDirectory": "c:\\users\\dfusi\\desktop\\bdm\\dump\\"
+      }
+    }
+  ]
+}
