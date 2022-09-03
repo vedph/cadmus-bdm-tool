@@ -92,7 +92,7 @@ namespace CadmusBdm.Import
             {
                 FacetId = "text",
                 Description = "",   // set later
-                Flags = region.Tag == "eng"? 1 : 0,
+                Flags = region.Tag == "eng"? 8 : 0,
                 GroupId = _groupId,
                 Title = string.IsNullOrEmpty(_groupId)
                     ? $"{nr:00000}-{region.Tag}"
@@ -217,7 +217,7 @@ namespace CadmusBdm.Import
                     CreatorId = context.Item.CreatorId,
                     UserId = context.Item.UserId,
                     ItemId = context.Item.Id,
-                    RoleId = "fr.it.vedph.comments"
+                    RoleId = "fr.it.vedph.comment"
                 };
                 context.Item.Parts.Add(commPart);
             }
