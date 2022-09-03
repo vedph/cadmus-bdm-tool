@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "bdmtool": {
+      "commandName": "Project",
+      "commandLineArgs": "import C:\\users\\dfusi\\Desktop\\bdm\\bdm-cadmus.json c:\\users\\dfusi\\Desktop\\bdm\\"
+    }
+  }
+}

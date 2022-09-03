@@ -5,7 +5,11 @@ This is based on Proteus with the following flow:
 (a) creation and extraction:
 
 1. DOCX is created by author following a few conventions.
-2. PDCX is extracted from DOCX.
+2. PDCX is extracted from DOCX like this:
+
+```ps1
+.\PickDocx pick C:\users\dfusi\desktop\corfu.docx C:\users\dfusi\Desktop\corfu\ -f -x -m
+```
 
 (b) BDM tool import:
 
@@ -29,7 +33,7 @@ Figure 1 shows the first page of a sample document: this page contains the first
 
 ![DOCX page sample](img/docx-page.png)
 
-*Figure 1 - DOCX page sample*
+- *Figure 1 - DOCX page sample*
 
 ### Footnote Escapes
 

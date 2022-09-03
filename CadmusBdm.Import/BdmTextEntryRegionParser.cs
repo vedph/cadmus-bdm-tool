@@ -21,19 +21,14 @@ namespace CadmusBdm.Import
     /// <seealso cref="EntryRegionParser" />
     /// <seealso cref="IEntryRegionParser" />
     [Tag("entry-region-parser.bdm-text")]
-    public sealed class BdmTextEntryRegionParser : EntryRegionParser, IEntryRegionParser
+    public sealed class BdmTextEntryRegionParser : EntryRegionParser,
+        IEntryRegionParser, IConfigurable<BdmTextEntryRegionParserOptions>
     {
         private readonly StandardItemSortKeyBuilder _sortKeyBuilder;
         private readonly Regex _wsRegex;
         private readonly Regex _keywordRegex;
         private readonly TextCutterOptions _cutOptions;
-
-        /// <summary>
-        /// The source title global datum. This is used by this parser to create
-        /// the target Cadmus item, and should be set by client code when
-        /// opening the source PDCX file.
-        /// </summary>
-        public const string K_SOURCE_TITLE = "*source_title";
+        private string? _groupId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BdmTextEntryRegionParser"/>
@@ -56,6 +51,19 @@ namespace CadmusBdm.Import
         }
 
         /// <summary>
+        /// Configures the object with the specified options.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <exception cref="ArgumentNullException">options</exception>
+        public void Configure(BdmTextEntryRegionParserOptions options)
+        {
+            if (options is null)
+                throw new ArgumentNullException(nameof(options));
+
+            _groupId = options.GroupId;
+        }
+
+        /// <summary>
         /// Determines whether this parser is applicable to the specified
         /// region. Typically, the applicability is determined via a configurable
         /// nested object, having parameters like region tag(s) and paths.
@@ -75,16 +83,9 @@ namespace CadmusBdm.Import
                    regions[regionIndex].Tag == "eng";
         }
 
-        private IItem CreateItem(CadmusEntrySetReaderContext context,
+        private IItem CreateItem(CadmusEntrySetContext context,
             EntryRegion region)
         {
-            string source = context.GetData<string>(K_SOURCE_TITLE)!;
-            if (source is null)
-            {
-                throw new InvalidOperationException(
-                    "Source title metadatum not set for TextEntryRegionParser");
-            }
-
             int nr = ((context.Number - 1) / 2) + 1;
 
             IItem item = new Item()
@@ -92,8 +93,10 @@ namespace CadmusBdm.Import
                 FacetId = "text",
                 Description = "",   // set later
                 Flags = region.Tag == "eng"? 1 : 0,
-                GroupId = source,
-                Title = $"{source} {nr:00000}-{region.Tag}",
+                GroupId = _groupId,
+                Title = string.IsNullOrEmpty(_groupId)
+                    ? $"{nr:00000}-{region.Tag}"
+                    : $"{_groupId} {nr:00000}-{region.Tag}",
                 CreatorId = "zeus",
                 UserId = "zeus",
             };
@@ -105,7 +108,7 @@ namespace CadmusBdm.Import
         private string NormalizeWS(string text)
             => _wsRegex.Replace(text, " ").Trim();
 
-        private static void StoreItem(CadmusEntrySetReaderContext context)
+        private static void StoreItem(CadmusEntrySetContext context)
         {
             if (context.Repository == null) return;
 
@@ -200,7 +203,7 @@ namespace CadmusBdm.Import
         }
 
         private int ParseFn(EntrySet set, int index, string loc,
-            CadmusEntrySetReaderContext context)
+            CadmusEntrySetContext context)
         {
             // get or create comments layer part
             TokenTextLayerPart<CommentLayerFragment>? commPart =
@@ -297,8 +300,7 @@ namespace CadmusBdm.Import
             if (set is null) throw new ArgumentNullException(nameof(set));
             if (regions is null) throw new ArgumentNullException(nameof(regions));
 
-            CadmusEntrySetReaderContext context =
-                (CadmusEntrySetReaderContext)set.Context;
+            CadmusEntrySetContext context = (CadmusEntrySetContext)set.Context;
 
             // create item
             context.Item = CreateItem(context, regions[regionIndex]);
@@ -352,6 +354,23 @@ namespace CadmusBdm.Import
             StoreItem(context);
 
             return regionIndex + 1;
+        }
+    }
+
+    /// <summary>
+    /// Options for <see cref="BdmTextEntryRegionParser"/>.
+    /// </summary>
+    public class BdmTextEntryRegionParserOptions
+    {
+        /// <summary>
+        /// Gets or sets the optional group identifier to assign to each
+        /// imported item.
+        /// </summary>
+        public string? GroupId { get; set; }
+
+        public BdmTextEntryRegionParserOptions()
+        {
+            GroupId = "";
         }
     }
 }

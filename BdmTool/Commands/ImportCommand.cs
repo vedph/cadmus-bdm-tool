@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 // slightly adapted from Proteus RunEntryPipelineCommand
+// as a temporary way for developing BDM components in a unique solution
 
 namespace CadmusBdm.Cli.Commands
 {
@@ -84,8 +85,10 @@ namespace CadmusBdm.Cli.Commands
                 typeof(PdcxEntryReader).Assembly,
                 // CadmusBdm.Import
                 typeof(BdmTextEntryRegionParser).Assembly);
-            EntryPipelineFactory factory = new(container, configuration);
-            factory.ConnectionString = configuration.GetConnectionString("Default");
+            EntryPipelineFactory factory = new(container, configuration)
+            {
+                ConnectionString = _options.Configuration.GetConnectionString("Default")
+            };
 
             EntryPipeline pipeline = new();
             pipeline.Configure(factory);
@@ -93,7 +96,7 @@ namespace CadmusBdm.Cli.Commands
             // get context
             ColorConsole.WriteInfo("Building context...");
             IEntrySetContext context = factory.GetPipelineContext()
-                ?? new EntrySetReaderContext();
+                ?? new EntrySetContext();
 
             // get entry reader
             ColorConsole.WriteInfo("Getting entries set reader...");

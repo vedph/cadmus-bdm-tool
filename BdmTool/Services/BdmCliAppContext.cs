@@ -20,8 +20,6 @@ namespace CadmusBdm.Cli.Services
         {
         }
 
-        // TODO: this sample method is used to provide the context service;
-        // delete it if you are not using such service.
         /// <summary>
         /// Gets the context service.
         /// </summary>

@@ -5,16 +5,17 @@ using Cadmus.General.Parts;
 using Cadmus.Mongo;
 using Fusi.Tools.Config;
 using Proteus.Core.Regions;
+using System;
 
 namespace CadmusBdm.Import
 {
     /// <summary>
     /// Cadmus entry set context.
-    /// Tag: <c>entry-set-reader-context.cadmus</c>.
+    /// Tag: <c>entry-set-context.cadmus</c>.
     /// </summary>
     /// <seealso cref="EntrySetReaderContext" />
-    [Tag("entry-set-reader-context.cadmus")]
-    public sealed class CadmusEntrySetReaderContext : EntrySetReaderContext,
+    [Tag("entry-set-context.cadmus")]
+    public sealed class CadmusEntrySetContext : EntrySetContext,
         IConfigurable<CadmusEntrySetReaderContextOptions>
     {
         private ICadmusRepository? _repository;
@@ -26,7 +27,7 @@ namespace CadmusBdm.Import
         public IItem? Item { get; set; }
 
         /// <summary>
-        /// Gets or sets the Cadmus repository used to store parsed items.
+        /// Gets the Cadmus repository used to store parsed items.
         /// </summary>
         public ICadmusRepository? Repository
         {
@@ -34,6 +35,12 @@ namespace CadmusBdm.Import
             {
                 if (_repository == null)
                 {
+                    if (_cs == null)
+                    {
+                        throw new ArgumentNullException(
+                            "No connection string configured for CadmusEntrySetContext");
+                    }
+
                     TagAttributeToTypeMap map = new();
                     map.Add(new[]
                     {
@@ -47,9 +54,7 @@ namespace CadmusBdm.Import
                         ConnectionString = _cs
                     });
 
-                    _repository = new MongoCadmusRepository(
-                        new StandardPartTypeProvider(map),
-                        new StandardItemSortKeyBuilder());
+                    _repository = repository;
                 }
                 return _repository;
             }
@@ -59,10 +64,18 @@ namespace CadmusBdm.Import
         {
             _cs = options.ConnectionString;
         }
+
+        public override IEntrySetContext Clone()
+        {
+            CadmusEntrySetContext context = (CadmusEntrySetContext)base.Clone();
+            context._cs = _cs;
+            context._repository = _repository;
+            return context;
+        }
     }
 
     /// <summary>
-    /// Options for <see cref="CadmusEntrySetReaderContext"/>.
+    /// Options for <see cref="CadmusEntrySetContext"/>.
     /// </summary>
     public class CadmusEntrySetReaderContextOptions
     {
