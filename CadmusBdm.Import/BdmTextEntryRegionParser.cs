@@ -121,9 +121,20 @@ namespace CadmusBdm.Import
 
         private static string GetLocation(StringBuilder text)
         {
+            // locate start of last token
             int i = text.Length - 1;
-            while (i > -1 && !char.IsWhiteSpace(text[i])) i--;
-            return $"1.{i + 1}";
+            while (i > 0 && !char.IsWhiteSpace(text[i - 1])) i--;
+
+            if (i == 0) return "1.1";
+            i--;
+            int n = 1;
+            while (i > 0)
+            {
+                if (char.IsWhiteSpace(text[i])) n++;
+                i--;
+            }
+
+            return $"1.{n}";
         }
 
         private static void AddAssertedIds(string? text, CommentLayerFragment fr)
