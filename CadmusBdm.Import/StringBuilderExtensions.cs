@@ -10,25 +10,39 @@ namespace CadmusBdm.Import
             // head
             int i = 0;
             while (i < sb.Length && char.IsWhiteSpace(sb[i])) i++;
-            if (i > 0) sb.Remove(0, i);
+            if (i > 0)
+            {
+                sb.Remove(0, i);
+                i = 0;
+            }
 
             // body
             while (i < sb.Length)
             {
                 if (char.IsWhiteSpace(sb[i]))
                 {
-                    sb[i] = ' ';
-                    i++;
+                    sb[i++] = ' ';
+                    int start = i;
                     while (i < sb.Length && char.IsWhiteSpace(sb[i])) i++;
+                    if (i > start) sb.Remove(start, i - start);
                 }
                 else i++;
             }
 
             // tail
-            if (sb.Length > 0 && sb[sb.Length - 1] == ' ')
+            if (sb.Length > 0 && sb[^1] == ' ')
                 sb.Remove(sb.Length - 1, 1);
         }
 
+        /// <summary>
+        /// Normalizes whitespace, by flattening all the whitespace(s) sequence
+        /// into a single space, trimming at both edges. Eventually it also
+        /// removes whitespace at left of any character in <paramref name="noLeftWS"/>,
+        /// and at right of any character in <paramref name="noRightWS"/>.
+        /// </summary>
+        /// <param name="sb">The sb.</param>
+        /// <param name="noLeftWS">The no left ws.</param>
+        /// <param name="noRightWS">The no right ws.</param>
         public static void NormalizeWS(this StringBuilder sb,
             IList<char>? noLeftWS = null,
             IList<char>? noRightWS = null)
@@ -54,7 +68,7 @@ namespace CadmusBdm.Import
                 while (i > -1)
                 {
                     if (noRightWS.Contains(sb[i]) && sb[i + 1] == ' ')
-                        sb.Remove(i, 1);
+                        sb.Remove(i + 1, 1);
                     i--;
                 }
             }

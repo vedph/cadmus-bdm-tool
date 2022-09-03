@@ -121,6 +121,8 @@ namespace CadmusBdm.Import
 
         private static string GetLocation(StringBuilder text)
         {
+            text.NormalizeWS();
+
             // locate start of last token
             int i = text.Length - 1;
             while (i > 0 && !char.IsWhiteSpace(text[i - 1])) i--;
