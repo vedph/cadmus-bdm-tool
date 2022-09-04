@@ -141,7 +141,8 @@
     {
       "Id": "entry-region-parser.bdm-text",
       "Options": {
-        "GroupId": "corfu"
+        "GroupId": "corfu",
+        "ParentCategories": [ "etym", "geo", "hist", "mon", "myth" ]
       }
     }
   ]

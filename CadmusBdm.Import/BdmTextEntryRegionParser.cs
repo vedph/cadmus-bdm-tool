@@ -29,6 +29,7 @@ namespace CadmusBdm.Import
         private readonly Regex _keywordRegex;
         private readonly TextCutterOptions _cutOptions;
         private string? _groupId;
+        private readonly HashSet<string> _parentCategories;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BdmTextEntryRegionParser"/>
@@ -48,6 +49,7 @@ namespace CadmusBdm.Import
                 MinusLimit = 5,
                 PlusLimit = 5,
             };
+            _parentCategories = new();
         }
 
         /// <summary>
@@ -61,6 +63,12 @@ namespace CadmusBdm.Import
                 throw new ArgumentNullException(nameof(options));
 
             _groupId = options.GroupId;
+            _parentCategories.Clear();
+            if (options.ParentCategories?.Count > 0)
+            {
+                foreach (string s in options.ParentCategories)
+                    _parentCategories.Add(s.ToLowerInvariant());
+            }
         }
 
         /// <summary>
@@ -210,6 +218,7 @@ namespace CadmusBdm.Import
                 else
                 {
                     string cat = tag.ToLowerInvariant();
+                    if (_parentCategories.Contains(cat)) cat += ".-";
                     if (!fr.Categories.Contains(cat)) fr.Categories.Add(cat);
                 }
             }
@@ -285,7 +294,8 @@ namespace CadmusBdm.Import
                         case "fn":
                             break;
                         default:
-                            throw new ArgumentException("Unknown command entry: " + cmd);
+                            throw new ArgumentException(
+                                "Unknown command entry: " + cmd);
                     }
                 }
 
@@ -383,6 +393,14 @@ namespace CadmusBdm.Import
         /// imported item.
         /// </summary>
         public string? GroupId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the optional list of parent categories. These are
+        /// all the top-level category entries having a child, like e.g.
+        /// <c>hist.</c> having a child <c>hist.-</c>, and are used to supply
+        /// the ending <c>.-</c> when users just type <c>hist.</c>.
+        /// </summary>
+        public IList<string>? ParentCategories { get; set; }
 
         public BdmTextEntryRegionParserOptions()
         {
