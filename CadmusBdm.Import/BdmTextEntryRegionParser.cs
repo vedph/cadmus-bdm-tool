@@ -152,7 +152,7 @@ namespace CadmusBdm.Import
             if (string.IsNullOrWhiteSpace(text)) return;
 
             fr.ExternalIds.AddRange(text
-                .Split(';',
+                .Split(new[] { ' ', ';' },
                     StringSplitOptions.RemoveEmptyEntries |
                     StringSplitOptions.TrimEntries)
                 .Where(url => fr.ExternalIds.All(id => id.Value != url))
@@ -266,7 +266,7 @@ namespace CadmusBdm.Import
                 }
 
                 // cmd: process:
-                // urls (list, space delimited)
+                // urls (list, semicolon-/space- delimited)
                 // aref:
                 // - awl
                 // - al (implicit work)
