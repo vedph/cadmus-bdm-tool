@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cadmus.Core" Version="4.0.4" />
+    <PackageReference Include="Cadmus.Core" Version="4.0.5" />
     <PackageReference Include="Cadmus.General.Parts" Version="2.1.0" />
-    <PackageReference Include="Cadmus.Mongo" Version="4.0.4" />
+    <PackageReference Include="Cadmus.Mongo" Version="4.0.5" />
     <PackageReference Include="Fusi.Tools" Version="2.1.9" />
-    <PackageReference Include="Proteus.Entries" Version="2.0.11" />
+    <PackageReference Include="Proteus.Entries" Version="2.0.12" />
   </ItemGroup>
 
 </Project>
