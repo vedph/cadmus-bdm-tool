@@ -120,7 +120,7 @@ namespace CadmusBdm.Import
         {
             if (context.Repository == null) return;
 
-            context.Repository.AddItem(context.Item);
+            context.Repository.AddItem(context.Item!);
 
             // save item's parts
             foreach (IPart part in context.Item!.Parts)
@@ -195,7 +195,7 @@ namespace CadmusBdm.Import
 
             foreach (string tag in text.Split(';',
                 StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
-                .Select(s => NormalizeWS(s)))
+                .Select(NormalizeWS))
             {
                 Match m = _keywordRegex.Match(tag);
                 if (m.Success)
@@ -364,7 +364,10 @@ namespace CadmusBdm.Import
                 }
 
                 // prp: ignore
-                else index++;
+                else
+                {
+                    index++;
+                }
             }
 
             // set text and item's description from it
@@ -374,7 +377,7 @@ namespace CadmusBdm.Import
                 Y = 1,
                 Text = NormalizeWS(t)
             });
-            context.Item.Description = TextCutter.Cut(t, _cutOptions);
+            context.Item.Description = TextCutter.Cut(t, _cutOptions) ?? "";
 
             // store
             StoreItem(context);

@@ -41,3 +41,7 @@ This produces `corfu.xml` and `corfu_fmt.xml`.
 ```
 
 (6) you can now open the MapAeg app and browse the items.
+
+## History
+
+- 2022-11-10: upgraded to NET 7.
