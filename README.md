@@ -6,12 +6,12 @@ This is work in progress.
 
 ## Quick Start
 
-(1) get the DOCX document in some folder. Say it is `C:\users\dfusi\desktop\bdm\corfu.docx`.
+(1) get the DOCX document in some folder. Say it is `c:\users\dfusi\desktop\bdm\corfu.docx`.
 
 (2) pick text and essential formatting:
 
 ```ps1
-.\PickDocx pick C:\users\dfusi\Desktop\bdm\corfu.docx C:\users\dfusi\Desktop\bdm\ -f -x -m
+.\PickDocx pick c:\users\dfusi\Desktop\bdm\corfu.docx C:\users\dfusi\Desktop\bdm\ -f -x -m
 ```
 
 This produces `corfu.xml` and `corfu_fmt.xml`.
@@ -19,7 +19,7 @@ This produces `corfu.xml` and `corfu_fmt.xml`.
 (3) run a [Proteus pipeline](bdm-dump.json) to dump the parsing process:
 
 ```ps1
-.\bdmtool import C:\users\dfusi\Desktop\bdm\bdm.json c:\users\dfusi\Desktop\bdm\
+.\bdmtool import c:\users\dfusi\Desktop\bdm\bdm.json c:\users\dfusi\Desktop\bdm\
 ```
 
 (4) create the MapAeg databases by starting its API. Then, delete parts and items if they were seeded.
@@ -44,4 +44,5 @@ This produces `corfu.xml` and `corfu_fmt.xml`.
 
 ## History
 
+- 2023-05-10: updated and refactored infrastructure.
 - 2022-11-10: upgraded to NET 7.
