@@ -1,5 +1,4 @@
 ﻿using CadmusBdm.Cli.Services;
-using CadmusBdm.Import;
 using Fusi.Cli;
 using Fusi.Cli.Commands;
 using Fusi.Microsoft.Extensions.Configuration.InMemoryJson;
@@ -7,10 +6,7 @@ using Microsoft.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Configuration;
 using Proteus.Core.Regions;
 using Proteus.Entries.Config;
-using Proteus.Entries.Pdcx;
 using Proteus.Entries.Pipeline;
-using Proteus.Entries.Regions;
-using SimpleInjector;
 using System;
 using System.IO;
 using System.Threading;
@@ -59,7 +55,7 @@ namespace CadmusBdm.Cli.Commands
             return reader.ReadToEnd();
         }
 
-        public Task Run()
+        public Task<int> Run()
         {
             ColorConsole.WriteWrappedHeader("IMPORT",
                 headerColor: ConsoleColor.Magenta);
@@ -71,25 +67,15 @@ namespace CadmusBdm.Cli.Commands
 
             // load pipeline config
             ColorConsole.WriteInfo("Building pipeline...");
-            string profile = LoadFileContent(_options.PipelinePath!);
-            IConfigurationBuilder builder = new ConfigurationBuilder()
-                .AddInMemoryJson(profile);
-            IConfiguration configuration = builder.Build();
+            string config = LoadFileContent(_options.PipelinePath!);
 
             // build pipeline (limited to "stock" components)
-            Container container = new();
-            EntryPipelineFactory.ConfigureServices(container,
-                // Proteus.Entries
-                typeof(ExcelDumpEntryRegionParser).Assembly,
-                // Proteus.Entries.Pdcx
-                typeof(PdcxEntryReader).Assembly,
-                // CadmusBdm.Import
-                typeof(BdmTextEntryRegionParser).Assembly);
-            EntryPipelineFactory factory = new(container, configuration)
-            {
-                ConnectionString = _options.Configuration.GetConnectionString("Default")
-            };
+            IEntryPipelineFactoryProvider? factoryProvider =
+                new BdmEntryPipelineFactoryProvider();
 
+            IEntryPipelineFactory factory = factoryProvider.GetFactory(config);
+            factory.ConnectionString =
+                _options!.Configuration!.GetConnectionString("Default");
             EntryPipeline pipeline = new();
             pipeline.Configure(factory);
 
@@ -123,7 +109,7 @@ namespace CadmusBdm.Cli.Commands
             }
             Console.WriteLine($"\nSets read: {count}");
 
-            return Task.CompletedTask;
+            return Task.FromResult(0);
         }
     }
 

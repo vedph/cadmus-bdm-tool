@@ -3,7 +3,7 @@ using Cadmus.Core.Config;
 using Cadmus.Core.Storage;
 using Cadmus.General.Parts;
 using Cadmus.Mongo;
-using Fusi.Tools.Config;
+using Fusi.Tools.Configuration;
 using Proteus.Core.Regions;
 using System;
 

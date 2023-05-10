@@ -1,7 +1,7 @@
 ﻿using Cadmus.Core;
 using Cadmus.General.Parts;
 using Cadmus.Refs.Bricks;
-using Fusi.Tools.Config;
+using Fusi.Tools.Configuration;
 using Fusi.Tools.Text;
 using Proteus.Core.Entries;
 using Proteus.Core.Regions;
