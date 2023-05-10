@@ -20,7 +20,7 @@ This is based on [Proteus](https://myrmex.github.io/overview/proteus/) with the 
 Each DOCX document contains alternating paragraphs: one is Latin, and the following one is its English translation.
 
 - the Latin paragraph contains just text.
-- the English paragraph can have footnotes. Footnotes can include escapes.
+- the English paragraph can have _footnotes_. Footnotes can include escapes.
 
 This structure ensures that we have 3 data domains:
 
@@ -32,7 +32,7 @@ Figure 1 shows the first page of a sample document: this page contains the first
 
 ![DOCX page sample](img/docx-page.png)
 
-- *Figure 1 - DOCX page sample*
+- _Figure 1 - DOCX page sample_
 
 ### Footnote Escapes
 
@@ -50,8 +50,8 @@ Kerkyra https://www.wikidata.org/wiki/Q121378http://www.geonames.org/2463678/cor
 
 (e3) ancient references are prefixed with `@` and have these forms:
 
-- "@author, work, location" terminated by ";" or ")" (e.g. "@Ap. Rhod., Argon. 4.565-6"): pattern `\@(?<a>[^,\d]+),\s*(?<w>[^;),]+),\s*(?<l>[^;)]+)`.
-- "@author, location" terminated by ";" or ")" (e.g. "@Paus., 5.22.6"): pattern `\@(?<a>[^,\d]+),\s*(?<l>[^;)]+)`.
+- "@author, work, location" terminated by `;` or `)` (e.g. "@Ap. Rhod., Argon. 4.565-6"): pattern `\@(?<a>[^,\d]+),\s*(?<w>[^;),]+),\s*(?<l>[^;)]+)`.
+- "@author, location" terminated by `;` or `)` (e.g. "@Paus., 5.22.6"): pattern `\@(?<a>[^,\d]+),\s*(?<l>[^;)]+)`.
 
 (e4) modern references are prefixed with `@` and have form `@AUTHOR YEAR,LOC` where both `YEAR` and `LOC` are digits, but `LOC` can also be digits-digits for a range of pages: pattern `\@(?<a>[^,\d]+)\s+(?<y>[12]\d{3})(,\s*(?<l>[^;)]+))?` (e.g. `@LEONTSINI 2014, esp. 32-35`).
 
@@ -59,7 +59,7 @@ Kerkyra https://www.wikidata.org/wiki/Q121378http://www.geonames.org/2463678/cor
 
 ## Entries
 
-From the point of view of Proteus, each paragraph is a `C block` and each footnote a `C fn` (inside a block). The input document is processed block by block, so that each block corresponds to an entries set.
+From the point of view of Proteus, each paragraph is a block command (`C block`), and each footnote a footnote command (`C fn`, inside a block). The input document is processed block by block, so that each block corresponds to a set of Proteus decoded entries.
 
 The commands used are:
 
@@ -67,7 +67,7 @@ The commands used are:
 - `fn(open=1)` / `fn(open=0)` => region `fn`.
 - `urls(l=URL_LIST)` representing one or more URLs. URL_LIST is a space-delimited list of URLs.
 - `aref(a=AUTHOR, w=WORK, l=LOC)` representing a citation.
-- `aref(a=AUTHOR, l=LOC)` representing a citation where the work is implicit. This conventionally happens e.g. for those authors having a single work, like Apollonius Rhodius (*Argonautica*).
+- `aref(a=AUTHOR, l=LOC)` representing a citation where the work is implicit. This conventionally happens e.g. for those authors having a single work, like Apollonius Rhodius (_Argonautica_).
 - `aref(a=AUTHOR, y=YEAR, l=LOC)` representing a citation from a modern work.
 - `tags(l=TAG_LIST)` representing a list of tags. Tags can represent categories or keywords, and are separated by semicolons. Keyword values are prefixed with `%lang:` or `%lang:index:` or just `%`. Example: `%Apollon`; `%eng:Apollon`; `%eng:myth:Apollon`. No prefix means category. Categories are not case sensitive, and get lowercased.
 
@@ -76,27 +76,27 @@ The commands used are:
 The mapping of such Proteus entries to Cadmus is summarized here:
 
 - each **lat** or **eng** region becomes a text item, with these metadata:
-  - title = source title + ordinal number (referred to the same language, i.e. = (block number - 1) / 2 + 1).
-  - citation = title
-  - group ID = source title.
-  - flags = 0 for Latin, 1 for English.
+  - _title_ = source title + ordinal number (referred to the same language, i.e. = (block number - 1) / 2 + 1).
+  - _citation_ = title
+  - _group ID_ = source title.
+  - _flags_ = 0 for Latin, 1 for English.
 
-- each **fn** inside the `eng` region is mapped to a comment fragment in a comments layer part.
+- each **fn** inside the `eng` region is mapped to a _comment fragment_ in a comments layer part.
 
 The comment fragment model is:
 
-- tag (string): `lg` when the footnote starts with `&`; else null.
-- text (string): all the text entries inside the footnote region.
-- references (DocReference[]): its source is `aref`.
-  - type (string)
-  - tag (string)
-  - citation (string)
-  - note (string)
-- externalIds (string[]): its source is `urls`.
-- categories (string[]): its source is `tags`.
-- keywords (IndexKeyword[]): its source is `tags`.
-  - indexId
-  - language*
-  - value
-  - note
-  - tag
+- `tag` (string): `lg` when the footnote starts with `&`; else null.
+- `text` (string): all the text entries inside the footnote region.
+- `references` (`DocReference[]`): its source is `aref`.
+  - `type` (string)
+  - `tag` (string)
+  - `citation` (string)
+  - `note` (string)
+- `externalIds` (string[]): its source is `urls`.
+- `categories` (string[]): its source is `tags`.
+- `keywords` (IndexKeyword[]): its source is `tags`.
+  - `indexId` (string)
+  - `language`* (string)
+  - `value` (string)
+  - `note` (string)
+  - `tag` (string)
