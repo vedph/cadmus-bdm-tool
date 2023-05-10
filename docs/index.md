@@ -1,6 +1,6 @@
 # BDM Tool Documentation
 
-This is based on Proteus with the following flow:
+This is based on [Proteus](https://myrmex.github.io/overview/proteus/) with the following flow:
 
 (a) creation and extraction:
 
@@ -8,12 +8,10 @@ This is based on Proteus with the following flow:
 2. PDCX is extracted from DOCX like this:
 
 ```ps1
-.\PickDocx pick C:\users\dfusi\desktop\corfu.docx C:\users\dfusi\Desktop\corfu\ -f -x -m
+.\PickDocx pick c:\users\dfusi\desktop\corfu.docx c:\users\dfusi\Desktop\corfu\ -f -x -m
 ```
 
-(b) BDM tool import:
-
-1. this tool imports PDCX into a Mongo DB.
+(b) BDM tool import: imports PDCX into a Mongo DB.
 
 ## Conventions
 
@@ -21,7 +19,8 @@ This is based on Proteus with the following flow:
 
 Each DOCX document contains alternating paragraphs: one is Latin, and the following one is its English translation.
 
-The Latin paragraph contains just text. The English paragraph can have footnotes. Footnotes can include escapes.
+- the Latin paragraph contains just text.
+- the English paragraph can have footnotes. Footnotes can include escapes.
 
 This structure ensures that we have 3 data domains:
 
@@ -39,9 +38,9 @@ Figure 1 shows the first page of a sample document: this page contains the first
 
 The following textual escapes are conventionally used in the footnotes of DOCX files:
 
-e1) textual notes are marked with `&` to separate them from commentary notes, i.e.: the first character of a textual note is `&`.
+(e1) textual notes are marked with `&` to separate them from commentary notes, i.e.: the first character of a textual note is `&`.
 
-e2) tokens starting with `http` end with the first whitespace or comma or `)` or at paragraph end. This sequence represents a set of 1 or more URLs, each starting with `http` (i.e. `http[^\s,)]+`). Their anchor text is the token before them: i.e. before http we expect a set of non-whitespaces + whitespace(s). That set is the reference word.
+(e2) tokens starting with `http` end with the first whitespace or comma or `)` or at paragraph end. This sequence represents a set of 1 or more URLs, each starting with `http` (i.e. `http[^\s,)]+`). Their anchor text is the token before them: i.e. before http we expect a set of non-whitespaces + whitespace(s). That set is the reference word.
 
 Example:
 
@@ -49,14 +48,14 @@ Example:
 Kerkyra https://www.wikidata.org/wiki/Q121378http://www.geonames.org/2463678/corfu.htmlhttps://pleiades.stoa.org/places/530835https://topostext.org/placde/396199PKerhttps://manto.unh.edu/viewer.p/60/2616/object/6580-9587576, the ...
 ```
 
-e3) ancient references are prefixed with `@` and have these forms:
+(e3) ancient references are prefixed with `@` and have these forms:
 
 - "@author, work, location" terminated by ";" or ")" (e.g. "@Ap. Rhod., Argon. 4.565-6"): pattern `\@(?<a>[^,\d]+),\s*(?<w>[^;),]+),\s*(?<l>[^;)]+)`.
 - "@author, location" terminated by ";" or ")" (e.g. "@Paus., 5.22.6"): pattern `\@(?<a>[^,\d]+),\s*(?<l>[^;)]+)`.
 
-e4) modern references are prefixed with `@` and have form `@AUTHOR YEAR,LOC` where both `YEAR` and `LOC` are digits, but `LOC` can also be digits-digits for a range of pages: pattern `\@(?<a>[^,\d]+)\s+(?<y>[12]\d{3})(,\s*(?<l>[^;)]+))?` (e.g. `@LEONTSINI 2014, esp. 32-35`).
+(e4) modern references are prefixed with `@` and have form `@AUTHOR YEAR,LOC` where both `YEAR` and `LOC` are digits, but `LOC` can also be digits-digits for a range of pages: pattern `\@(?<a>[^,\d]+)\s+(?<y>[12]\d{3})(,\s*(?<l>[^;)]+))?` (e.g. `@LEONTSINI 2014, esp. 32-35`).
 
-e5) tags for notes are in `[]` at the very beginning of their text, except when they are preceded by `&` (see `e1` above). Multiple tags are separated by space.
+(e5) tags for notes are in `[]` at the very beginning of their text, except when they are preceded by `&` (see `e1` above). Multiple tags are separated by space.
 
 ## Entries
 

@@ -4,6 +4,8 @@ MapAeg (Buondelmonti) import tool. See this project's [documentation](docs/index
 
 This is work in progress.
 
+- 👉 [documentation](docs/index.md)
+
 ## Quick Start
 
 (1) get the DOCX document in some folder. Say it is `c:\users\dfusi\desktop\bdm\corfu.docx`.
@@ -19,7 +21,7 @@ This produces `corfu.xml` and `corfu_fmt.xml`.
 (3) run a [Proteus pipeline](bdm-dump.json) to dump the parsing process:
 
 ```ps1
-.\bdmtool import c:\users\dfusi\Desktop\bdm\bdm.json c:\users\dfusi\Desktop\bdm\
+.\bdmtool import c:\users\dfusi\Desktop\bdm\bdm-dump.json c:\users\dfusi\Desktop\bdm\
 ```
 
 (4) create the MapAeg databases by starting its API. Then, delete parts and items if they were seeded.
